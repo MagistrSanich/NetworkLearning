@@ -14,12 +14,13 @@ namespace NetworkLearning.Library
         List<Synapse> outputSynapses;
         //List<double> outputWeights;
         public double value { get; set; }
-        public double delta { get; set; }
+        public double delta = 0;
+        public double z { get; set; }
         public int myLayer { get; set; }
         public int myNumber { get; set; }
         public int idN { get; }
         //Methods
-        //Рассчет значения
+        //Расчет значения
         public void culcValue()
         {
             if(typeNeuron==3)
@@ -30,18 +31,32 @@ namespace NetworkLearning.Library
             double summAll=0;
             foreach(Synapse synapse in inputSynapses)
             {
-                double summ = 0;
-                foreach(Neurons n in synapse.leftNeurons)
-                {
-                    summ += n.value;
-                }
-                summAll += summ * synapse.weight.weight;
+                summAll += synapse.leftNeuron.value * synapse.weight.weight;
             }
+            z = summAll;
             value = CulcNN.Sigmoid(summAll);
         }
-        public void culcDelta(double trueAnswer = 0)
+        public void culcDelta()
         {
-            if (typeNeuron == 0 || typeNeuron == 3) return;
+            if (typeNeuron == 0) return;
+            double summ = 0;
+            foreach (Synapse synapse in outputSynapses)
+            {
+                summ += synapse.rightNeuron.delta * synapse.weight.weight;
+            }
+            delta = summ * CulcNN.difFunc(z, typeActivation);
+        }
+        public void culcWeight(double speed,int m)
+        {
+            if(typeNeuron==3)
+            {
+
+            }
+            foreach (Synapse synapse in inputSynapses)
+            {
+                double dw = speed / m * (delta * synapse.leftNeuron.value);
+                synapse.weight.weight = synapse.weight.weight - dw;
+            }
         }
         public void addInputS(Synapse synapse)
         {
@@ -51,7 +66,10 @@ namespace NetworkLearning.Library
         {
             outputSynapses.Add(synapse);
         }
-
+        public void setDelta(double d)
+        {
+            this.delta = d;
+        }
         public Neurons(int TypeNeuron,int TypeActivation, int Layer,int NumberNeuron)
         {
             inputSynapses = new List<Synapse>();

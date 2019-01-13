@@ -18,5 +18,13 @@ namespace NetworkLearning.Library
         {
             return ((Math.Exp(2 * z) - 1) / (Math.Exp(2 * z) + 1));
         }
+
+        //0-sigmoid
+        static public double difFunc(double z, int type)
+        {
+            if (type == 0)
+                return z * (1 - z);
+            return 0;
+        }
     }
 }

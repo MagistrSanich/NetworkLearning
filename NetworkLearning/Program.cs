@@ -12,17 +12,54 @@ namespace NetworkLearning
     {
         static void Main(string[] args)
         {
-            /*
+            
             Setting set = createSetting();
             Console.WriteLine(setToSting(set));
             Networks network = new Networks(set);
             //Console.WriteLine(JsonConvert.SerializeObject(network.neurons));
+            List<List<double>> tests = new List<List<double>>()
+            {
+                new List<double>() { 0,0 },
+                new List<double>() { 0,1 },
+                new List<double>() { 1,0 },
+                new List<double>() { 1,1 }
 
-            List<double> input = new List<double>() { 0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6 };
-            List<double> output = network.runNN(input);
-            Console.WriteLine("\n Input: "+JsonConvert.SerializeObject(input)
-                +"\nOutput: "+JsonConvert.SerializeObject(output));
-            */
+            };
+            List<List<double>> testAnsw = new List<List<double>>()
+            {
+                new List<double>() { 0 },
+                new List<double>() { 1 },
+                new List<double>() { 1 },
+                new List<double>() { 0 }
+
+            };
+            Console.Write("\nOutput: ");
+            for (int i = 0; i < tests.Count; i++)
+            {
+                List<double> output = network.runNN(tests[i]);
+                Console.WriteLine(JsonConvert.SerializeObject(output));
+            }
+
+            const int iteration = 40000;
+            const int m = 4;
+            for(int i=0;i<iteration;i++)
+            {
+                network.learnNN(new List<double> { 0, 1 }, new List<double> { 1 }, m);
+                network.learnNN(new List<double> { 0, 0 }, new List<double> { 0 }, m);
+                network.learnNN(new List<double> { 1, 0 }, new List<double> { 1 }, m);
+                network.learnNN(new List<double> { 1, 1 }, new List<double> { 0 }, m);
+            }
+
+            Console.Write("\nOutput: ");
+            for (int i = 0; i < tests.Count; i++)
+            {
+                List<double> output = network.runNN(tests[i]);
+                Console.WriteLine(JsonConvert.SerializeObject(output));
+            }
+
+            Console.Read();
+            /*
+             * -----------------------------------Считывание изображений ------------------------------
             FileStream fstream =
                 new FileStream(@"C:\Users\iamse\Downloads\TrainNN\t10k-images.idx3-ubyte",
                 FileMode.Open);
@@ -72,7 +109,7 @@ namespace NetworkLearning
                     Console.ResetColor(); // сбрасываем в стандартный
                 }
             }
-            fstream.Close();
+            fstream.Close();*/
 
             Console.Read();
         }
@@ -80,11 +117,18 @@ namespace NetworkLearning
         {
             Random random = new Random();
             Setting set = new Setting(
-                new int[] { 9, 2, 2 },//Количество нейронов на соответствующих слоях
+                new int[] { 2, 4, 1 },//Количество нейронов на соответствующих слоях
+                //Полносвязные слои
+                new int[][]
+                {
+                    new int[]{0,1},//Нейроны левого слоя полностью связаны с н. правого слоя
+                    new int[]{1,2}
+                }
+                ,
                 new Setting.Relations[] {
                     //Ниже указаны связи. Вх.парам: номер слоя,вес,левые нейроны,правые нейроны
-                    new Setting.Relations(0,random.NextDouble(),new int[] { 0,1,2,3},new int[]{0}),
-                    new Setting.Relations(0,random.NextDouble(),new int[] { 4,5,6,7},new int[]{1}),
+                    /*new Setting.Relations(0,random.NextDouble(),new int[] { 0},new int[]{0}),
+                    new Setting.Relations(0,random.NextDouble(),new int[] { 4},new int[]{1}),
                     new Setting.Relations(0,random.NextDouble(),new int[] { 8},new int[]{0}),
                     new Setting.Relations(0,random.NextDouble(),new int[] { 8},new int[]{1}),
                     new Setting.Relations(1,random.NextDouble(),new int[] { 0},new int[]{0}),
@@ -92,9 +136,9 @@ namespace NetworkLearning
                     new Setting.Relations(1,random.NextDouble(),new int[] { 1},new int[]{0}),
                     new Setting.Relations(1,random.NextDouble(),new int[] { 1},new int[]{1}),
                     new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{0}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{1})
+                    new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{1})*/
                 },//Ниже указаны слои на которых есть 1 нейрон смещения 
-                new int[] { 1});
+                new int[] { });
             return set;
         }
         static string setToSting(Setting set)

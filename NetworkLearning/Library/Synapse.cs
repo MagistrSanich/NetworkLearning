@@ -17,8 +17,8 @@ namespace NetworkLearning.Library
     }
     public class Synapse
     {
-        public List<Neurons> leftNeurons;
-        public List<Neurons> rightNeurons;
+        public Neurons leftNeuron;
+        public Neurons rightNeuron;
 
         public Weights weight;
         public double dw;
@@ -29,8 +29,8 @@ namespace NetworkLearning.Library
         public Synapse( Weights Weight)
         {
             weight = Weight;
-            leftNeurons = new List<Neurons>();
-            rightNeurons = new List<Neurons>();
+            //leftNeurons = new Neurons();
+            //rightNeurons = new List<Neurons>();
         }
 
         //public void learnLesson()

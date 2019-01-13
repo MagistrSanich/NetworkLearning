@@ -14,7 +14,8 @@ namespace NetworkLearning.Library
         {
             public int myLeftLayer;//слой на котором находится эта связь.
             public double myWeight;
-            public int[] leftN;//номер левого нейрона
+            public int[] leftN;//номер левого нейрона (Пока тут может быть только одно число
+            //но потом мб добавлю возможность создавать общие веса для нескольких синапсов
             public int[] rightN;
             public Relations(int LeftLayer,double Weight, int[] NumberLeftNeuron,int[] NumberRightNeuron)
             {
@@ -27,11 +28,13 @@ namespace NetworkLearning.Library
         public int[] countNeurons;
         public int[] bias; // На каких слоях есть нейрон смещения
         public Relations[] relations;// Count Synapses != CountNeurons-1; 1 матрица = 1 синапс ()
-        public Setting(int[] CountNeurons,Relations[] Relations, int[] Bias)
+        public int[][] fullRelations;
+        public Setting(int[] CountNeurons, int[][] FullRelations, Relations[] Relations, int[] Bias)
         {
             countNeurons = CountNeurons;
             relations = Relations;
             bias = Bias;
+            fullRelations = FullRelations;
         }
     }
 
