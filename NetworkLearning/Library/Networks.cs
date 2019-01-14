@@ -10,20 +10,20 @@ namespace NetworkLearning.Library
     {
         public List<List<Neurons>> neurons;
         List<Synapse> synapses;
-        public double Epsilon = 0.7;
-        public double Moment = 0.5;
-        public double Speed = 0.0009;
-        public int typeActivarionF;//0-sigmoid
+        public double epsilon;
+        public double moment;
+        public double speed;
+        public int activFunc;//0-sigmoid
 
         public Networks(Setting setting, double epsilon = 0.7, double moment = 0.5, double speed = 0.0009,
             int typeActivationFunc = 0)
         {
-            Epsilon = epsilon;
-            Moment = moment;
-            Speed = speed;
+            this.epsilon = epsilon;
+            this.moment = moment;
+            this.speed = speed;
             neurons = new List<List<Neurons>>();
             synapses = new List<Synapse>();
-            typeActivarionF = typeActivationFunc;
+            activFunc = typeActivationFunc;
             initNet(setting);
         }
         public List<double> runNN(List<double> input)
@@ -57,12 +57,12 @@ namespace NetworkLearning.Library
             runNN(input);
 
             //Расчет дельт выходного слоя
-            int L = neurons.Count - 1;
-            int countL = neurons.Last().Count;
-            for(int ner=0;ner<countL;ner++)
+            int L = neurons.Count - 1;//Номер последнего слоя
+            int countL = neurons.Last().Count;//Количество н. на последнем слое
+            for (int ner = 0; ner < countL; ner++)
             {
-                double a = input.ElementAt(ner) - trueAnswer.ElementAt(ner);
-                double fn = CulcNN.difFunc(neurons.ElementAt(countL).ElementAt(ner).z,typeActivarionF);
+                double a = neurons.ElementAt(countL).ElementAt(ner).value - trueAnswer.ElementAt(ner);
+                double fn = CulcNN.difFunc(neurons.ElementAt(countL).ElementAt(ner).z, activFunc);
                 neurons.ElementAt(L).ElementAt(ner).setDelta(a * fn);
             }
 
@@ -76,11 +76,11 @@ namespace NetworkLearning.Library
             }
 
             //Меняем веса
-            for (int lay = 1; lay < neurons.Count; lay++)
+            for (int lay = L; lay >= 1; lay--)
             {
                 for (int ner = 0; ner < neurons.ElementAt(lay).Count; ner++)
                 {
-                    neurons.ElementAt(lay).ElementAt(ner).culcWeight(Speed, m);
+                    neurons.ElementAt(lay).ElementAt(ner).culcWeight(speed, m);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace NetworkLearning.Library
                 List<Neurons> n = new List<Neurons>();
                 for (int j = 0; j < set.countNeurons[0]; j++)
                 {
-                    n.Add(new Neurons(0, typeActivarionF, 0, j));
+                    n.Add(new Neurons(0, activFunc, 0, j));
                 }
                 neurons.Add(n);
             }
@@ -104,7 +104,7 @@ namespace NetworkLearning.Library
                 List<Neurons> n = new List<Neurons>();
                 for (int j = 0; j < set.countNeurons[i]; j++)
                 {
-                    n.Add(new Neurons(1, typeActivarionF, i, j));
+                    n.Add(new Neurons(1, activFunc, i, j));
                 }
                 neurons.Add(n);
             }
@@ -113,14 +113,14 @@ namespace NetworkLearning.Library
                 List<Neurons> n = new List<Neurons>();
                 for (int j = 0; j < set.countNeurons[set.countNeurons.Length - 1]; j++)
                 {
-                    n.Add(new Neurons(2, typeActivarionF, set.countNeurons.Length - 1, j));
+                    n.Add(new Neurons(2, activFunc, set.countNeurons.Length - 1, j));
                 }
                 neurons.Add(n);
             }
             //Создание нейронов bias
             for (int i = 0; i < set.bias.Length; i++)
             {
-                neurons.ElementAt(set.bias[i]).Add(new Neurons(3, typeActivarionF, set.bias[i],
+                neurons.ElementAt(set.bias[i]).Add(new Neurons(3, activFunc, set.bias[i],
                     -1));
             }
             //Создание и добавление синапсов между полносвязными слоями
@@ -142,6 +142,7 @@ namespace NetworkLearning.Library
                         //Закинуть синапс нейронам
                         neurons.ElementAt(neuronsLayer).ElementAt(ner).addOutputS(s);
                         neurons.ElementAt(neuronsLayer + 1).ElementAt(r).addInputS(s);
+                        synapses.Add(s);
                     }
                 }
             }

@@ -39,23 +39,24 @@ namespace NetworkLearning
                 List<double> output = network.runNN(tests[i]);
                 Console.WriteLine(JsonConvert.SerializeObject(output));
             }
-
-            const int iteration = 40000;
-            const int m = 4;
-            for(int i=0;i<iteration;i++)
+            //Console.WriteLine("\n"+JsonConvert.SerializeObject(network.neurons));
+            const int iteration = 5;
+            const int m = 1;
+            for (int i = 0; i < iteration; i++)
             {
-                network.learnNN(new List<double> { 0, 1 }, new List<double> { 1 }, m);
-                network.learnNN(new List<double> { 0, 0 }, new List<double> { 0 }, m);
-                network.learnNN(new List<double> { 1, 0 }, new List<double> { 1 }, m);
-                network.learnNN(new List<double> { 1, 1 }, new List<double> { 0 }, m);
+                //for (int j = 0; j < tests.Count; j++)
+                //network.learnNN(tests[j], testAnsw[j], m);
+                network.learnNN(tests[3], testAnsw[3], m);
             }
 
             Console.Write("\nOutput: ");
-            for (int i = 0; i < tests.Count; i++)
+            List<double> output1 = network.runNN(tests[3]);
+            Console.WriteLine(JsonConvert.SerializeObject(output1));
+            /*for (int i = 0; i < tests.Count; i++)
             {
                 List<double> output = network.runNN(tests[i]);
                 Console.WriteLine(JsonConvert.SerializeObject(output));
-            }
+            }*/
 
             Console.Read();
             /*

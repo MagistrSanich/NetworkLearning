@@ -9,7 +9,7 @@ namespace NetworkLearning.Library
     public class Neurons
     {
         public int typeNeuron;//0-input 1-hidden 2-output 3-bids
-        public int typeActivation;//0-sigmoid
+        public int activFunc;//0-sigmoid
         List<Synapse> inputSynapses;
         List<Synapse> outputSynapses;
         //List<double> outputWeights;
@@ -28,13 +28,13 @@ namespace NetworkLearning.Library
                 value = 1;
                 return;
             }
-            double summAll=0;
+            double summ=0;
             foreach(Synapse synapse in inputSynapses)
             {
-                summAll += synapse.leftNeuron.value * synapse.weight.weight;
+                summ += synapse.leftNeuron.value * synapse.weight.w;
             }
-            z = summAll;
-            value = CulcNN.Sigmoid(summAll);
+            z = summ;
+            value = CulcNN.Sigmoid(summ);
         }
         public void culcDelta()
         {
@@ -42,9 +42,9 @@ namespace NetworkLearning.Library
             double summ = 0;
             foreach (Synapse synapse in outputSynapses)
             {
-                summ += synapse.rightNeuron.delta * synapse.weight.weight;
+                summ += synapse.rightNeuron.delta * synapse.weight.w;
             }
-            delta = summ * CulcNN.difFunc(z, typeActivation);
+            delta = summ * CulcNN.difFunc(z, activFunc);
         }
         public void culcWeight(double speed,int m)
         {
@@ -55,7 +55,7 @@ namespace NetworkLearning.Library
             foreach (Synapse synapse in inputSynapses)
             {
                 double dw = speed / m * (delta * synapse.leftNeuron.value);
-                synapse.weight.weight = synapse.weight.weight - dw;
+                synapse.weight.updateWeight(dw);
             }
         }
         public void addInputS(Synapse synapse)
@@ -75,7 +75,7 @@ namespace NetworkLearning.Library
             inputSynapses = new List<Synapse>();
             outputSynapses = new List<Synapse>();
             typeNeuron = TypeNeuron;
-            typeActivation = TypeActivation;
+            activFunc = TypeActivation;
             myLayer = Layer;
             myNumber = NumberNeuron;
             idN = IdGetter.getNumberNeuron();

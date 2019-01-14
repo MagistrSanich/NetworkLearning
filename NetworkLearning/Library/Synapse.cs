@@ -8,10 +8,20 @@ namespace NetworkLearning.Library
 {
     public class Weights
     {
-        public double weight;
+        public double w;
+        public double lastDW;
+        public double currDW;
         public Weights(double Weight)
         {
-            weight = Weight;
+            w = Weight;
+            lastDW = 0;
+            currDW = 0;
+        }
+        public void updateWeight(double dw)
+        {
+            lastDW = currDW;
+            currDW = dw;
+            w -= currDW;
         }
         Weights() { }
     }
@@ -21,10 +31,10 @@ namespace NetworkLearning.Library
         public Neurons rightNeuron;
 
         public Weights weight;
-        public double dw;
-        public double lastDW;
 
         public int typeSynapse { get; }//0-обычный 1-делит вес с другими
+
+
 
         public Synapse( Weights Weight)
         {
