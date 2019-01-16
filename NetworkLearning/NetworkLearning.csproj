@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Library\CulcNN.cs" />
-    <Compile Include="Library\IdGetter.cs" />
     <Compile Include="Library\Networks.cs" />
     <Compile Include="Library\Neurons.cs" />
     <Compile Include="Library\Setting.cs" />

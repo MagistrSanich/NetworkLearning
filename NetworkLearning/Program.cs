@@ -40,13 +40,13 @@ namespace NetworkLearning
                 Console.WriteLine(JsonConvert.SerializeObject(output));
             }
             //Console.WriteLine("\n"+JsonConvert.SerializeObject(network.neurons));
-            const int iteration = 5000;
+            const int iteration = 1;
             const int m = 1;
             for (int i = 0; i < iteration; i++)
             {
-                for (int j = 0; j < tests.Count; j++)
-                network.learnNN(tests[j], testAnsw[j], m);
-                //network.learnNN(tests[3], testAnsw[3], m);
+                //for (int j = 0; j < tests.Count; j++)
+                //network.learnNN(tests[j], testAnsw[j], m);
+                network.learnNN(tests[0], testAnsw[0], m);
             }
 
             Console.Write("\nOutput: ");
@@ -60,7 +60,7 @@ namespace NetworkLearning
 
             Console.Read();
             /*
-             * -----------------------------------Считывание изображений ------------------------------
+             //-----------------------------------Считывание изображений ------------------------------
             FileStream fstream =
                 new FileStream(@"C:\Users\iamse\Downloads\TrainNN\t10k-images.idx3-ubyte",
                 FileMode.Open);
@@ -110,9 +110,9 @@ namespace NetworkLearning
                     Console.ResetColor(); // сбрасываем в стандартный
                 }
             }
-            fstream.Close();*/
+            fstream.Close();
 
-            Console.Read();
+            Console.Read();*/
         }
         static Setting createSetting()
         {

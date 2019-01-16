@@ -146,17 +146,20 @@ namespace NetworkLearning.Library
                 //каждого правого нейрона
                 int neuronsLayer = set.fullRelations.ElementAt(i).ElementAt(0);
                 Random random = new Random();
-                for (int ner=0;ner<neurons.ElementAt(neuronsLayer).Count;ner++)
+                for (int lef=0;lef<neurons.ElementAt(neuronsLayer).Count;lef++)
                 {
-                    for(int r=0;r<neurons.ElementAt(neuronsLayer+1).Count;r++)
+                    for (int r = 0; r < neurons.ElementAt(neuronsLayer + 1).Count; r++)
                     {
+                        //Если нейрон справа bias то связь не устанваливать
+                        if (neurons.ElementAt(neuronsLayer + 1).ElementAt(r).typeNeuron == 3)
+                            continue;
                         Weights w = new Weights(0.5 + random.NextDouble() / 4);
                         Synapse s = new Synapse(w);
                         //Добавление нейронов в синапс
-                        s.leftNeuron = neurons.ElementAt(neuronsLayer).ElementAt(ner);
-                        s.rightNeuron = neurons.ElementAt(neuronsLayer+1).ElementAt(r);
+                        s.leftNeuron = neurons.ElementAt(neuronsLayer).ElementAt(lef);
+                        s.rightNeuron = neurons.ElementAt(neuronsLayer + 1).ElementAt(r);
                         //Закинуть синапс нейронам
-                        neurons.ElementAt(neuronsLayer).ElementAt(ner).addOutputS(s);
+                        neurons.ElementAt(neuronsLayer).ElementAt(lef).addOutputS(s);
                         neurons.ElementAt(neuronsLayer + 1).ElementAt(r).addInputS(s);
                         synapses.Add(s);
                     }
