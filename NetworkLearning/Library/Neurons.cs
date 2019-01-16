@@ -18,14 +18,12 @@ namespace NetworkLearning.Library
         public double z { get; set; }
         public int myLayer { get; set; }
         public int myNumber { get; set; }
-        public int idN { get; }
         //Methods
         //Расчет значения
         public void culcValue()
         {
             if(typeNeuron==3)
             {
-                value = 1;
                 return;
             }
             double summ=0;
@@ -38,7 +36,7 @@ namespace NetworkLearning.Library
         }
         public void culcDelta()
         {
-            if (typeNeuron == 0) return;
+            if (typeNeuron == 0 || typeNeuron == 3) return;
             double summ = 0;
             foreach (Synapse synapse in outputSynapses)
             {
@@ -48,10 +46,6 @@ namespace NetworkLearning.Library
         }
         public void culcWeight(double speed,int m)
         {
-            if(typeNeuron==3)
-            {
-
-            }
             foreach (Synapse synapse in inputSynapses)
             {
                 double dw = speed / m * (delta * synapse.leftNeuron.value);
@@ -70,15 +64,18 @@ namespace NetworkLearning.Library
         {
             this.delta = d;
         }
-        public Neurons(int TypeNeuron,int TypeActivation, int Layer,int NumberNeuron)
+        public void setValue(double v)
+        {
+            this.value = v;
+        }
+        public Neurons(int TypeNeuron,int TypeActivation, int Layer, double Value=0)
         {
             inputSynapses = new List<Synapse>();
             outputSynapses = new List<Synapse>();
             typeNeuron = TypeNeuron;
             activFunc = TypeActivation;
             myLayer = Layer;
-            myNumber = NumberNeuron;
-            idN = IdGetter.getNumberNeuron();
+            value = Value;
         }
     }
 }

@@ -83,6 +83,20 @@ namespace NetworkLearning.Library
                     neurons.ElementAt(lay).ElementAt(ner).culcWeight(speed, m);
                 }
             }
+
+            //Меняем смещение 
+            for (int lay = L-1; lay >= 1; lay--)
+            {
+                if(neurons.ElementAt(lay).Last().typeNeuron==3)
+                {
+                    double summ = 0;
+                    for (int i = 0; i < neurons.ElementAt(lay).Count - 1; i++)
+                    {
+                        summ += neurons.ElementAt(lay).ElementAt(i).delta;
+                    }
+                    neurons.ElementAt(lay).Last().setValue(speed / m * summ);
+                }
+            }
         }
 
         //Создает НС. Добавлю перегрузку, чтобы можно было задать веса
@@ -99,12 +113,20 @@ namespace NetworkLearning.Library
                 neurons.Add(n);
             }
             //Создание нейронов hidden
-            for (int i = 1; i < set.countNeurons.Length - 1; i++)
+            for (int lay = 1; lay < set.countNeurons.Length - 1; lay++)
             {
                 List<Neurons> n = new List<Neurons>();
-                for (int j = 0; j < set.countNeurons[i]; j++)
+                for (int j = 0; j < set.countNeurons[lay]; j++)
                 {
-                    n.Add(new Neurons(1, activFunc, i, j));
+                    n.Add(new Neurons(1, activFunc, lay));
+                }
+                //Добавление Bias
+                for (int j = 0; j < set.bias.Length; j++)
+                {
+                    if (lay == set.bias[j].index)
+                    {
+                        n.Add(new Neurons(3, activFunc, lay, set.bias[j].value));
+                    }
                 }
                 neurons.Add(n);
             }
@@ -116,12 +138,6 @@ namespace NetworkLearning.Library
                     n.Add(new Neurons(2, activFunc, set.countNeurons.Length - 1, j));
                 }
                 neurons.Add(n);
-            }
-            //Создание нейронов bias
-            for (int i = 0; i < set.bias.Length; i++)
-            {
-                neurons.ElementAt(set.bias[i]).Add(new Neurons(3, activFunc, set.bias[i],
-                    -1));
             }
             //Создание и добавление синапсов между полносвязными слоями
             for(int i=0;i<set.fullRelations.Length;i++)

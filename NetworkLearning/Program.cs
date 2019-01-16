@@ -40,23 +40,23 @@ namespace NetworkLearning
                 Console.WriteLine(JsonConvert.SerializeObject(output));
             }
             //Console.WriteLine("\n"+JsonConvert.SerializeObject(network.neurons));
-            const int iteration = 5;
+            const int iteration = 5000;
             const int m = 1;
             for (int i = 0; i < iteration; i++)
             {
-                //for (int j = 0; j < tests.Count; j++)
-                //network.learnNN(tests[j], testAnsw[j], m);
-                network.learnNN(tests[3], testAnsw[3], m);
+                for (int j = 0; j < tests.Count; j++)
+                network.learnNN(tests[j], testAnsw[j], m);
+                //network.learnNN(tests[3], testAnsw[3], m);
             }
 
             Console.Write("\nOutput: ");
-            List<double> output1 = network.runNN(tests[3]);
-            Console.WriteLine(JsonConvert.SerializeObject(output1));
-            /*for (int i = 0; i < tests.Count; i++)
+            /*List<double> output1 = network.runNN(tests[3]);
+            Console.WriteLine(JsonConvert.SerializeObject(output1));*/
+            for (int i = 0; i < tests.Count; i++)
             {
                 List<double> output = network.runNN(tests[i]);
                 Console.WriteLine(JsonConvert.SerializeObject(output));
-            }*/
+            }
 
             Console.Read();
             /*
@@ -119,7 +119,7 @@ namespace NetworkLearning
             Random random = new Random();
             Setting set = new Setting(
                 new int[] { 2, 4, 1 },//Количество нейронов на соответствующих слоях
-                //Полносвязные слои
+                                      //Полносвязные слои
                 new int[][]
                 {
                     new int[]{0,1},//Нейроны левого слоя полностью связаны с н. правого слоя
@@ -139,7 +139,9 @@ namespace NetworkLearning
                     new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{0}),
                     new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{1})*/
                 },//Ниже указаны слои на которых есть 1 нейрон смещения 
-                new int[] { });
+                new Setting.Biases[] {
+                    new Setting.Biases(1,0.5)
+                });
             return set;
         }
         static string setToSting(Setting set)
