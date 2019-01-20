@@ -13,6 +13,7 @@ namespace NetworkLearning.Library
         public double epsilon;
         public double moment;
         public double speed;
+        bool useBias;
         public int activFunc;//0-sigmoid
 
         public Networks(Setting setting, double epsilon = 0.7, double moment = 0.5, double speed = 0.0009,
@@ -29,7 +30,7 @@ namespace NetworkLearning.Library
         public List<double> runNN(List<double> input)
         {
             //Ввод входных параметров
-            for (int i = 0; i < neurons.ElementAt(0).Count; i++)
+            for (int i = 0; i < neurons.ElementAt(0).Count - (useBias ? 1 : 0); i++)
             {
                 neurons.ElementAt(0).ElementAt(i).value = input.ElementAt(i);
             }
@@ -78,24 +79,23 @@ namespace NetworkLearning.Library
             //Меняем веса
             for (int lay = L; lay >= 1; lay--)
             {
-                for (int ner = 0; ner < neurons.ElementAt(lay).Count; ner++)
+                /*Идем до -1 потому что последний всегда Bias, а если нет то там будет - 0*/
+                for (int ner = 0; ner < neurons.ElementAt(lay).Count - (useBias ? 1 : 0); ner++)
                 {
                     neurons.ElementAt(lay).ElementAt(ner).culcWeight(speed, m);
                 }
             }
 
-            //Меняем смещение 
-            for (int lay = L-1; lay >= 1; lay--)
+            //Меняем  Biases
+            for (int lay = 0; lay < L; lay++)
             {
-                if(neurons.ElementAt(lay).Last().typeNeuron==3)
+                double summ = 0;
+                foreach (Neurons n in neurons.ElementAt(lay + 1))
                 {
-                    double summ = 0;
-                    for (int i = 0; i < neurons.ElementAt(lay).Count - 1; i++)
-                    {
-                        summ += neurons.ElementAt(lay).ElementAt(i).delta;
-                    }
-                    neurons.ElementAt(lay).Last().setValue(speed / m * summ);
+                    summ += n.delta;
                 }
+                double bias = neurons.ElementAt(lay).Last().value;
+                neurons.ElementAt(lay).Last().setValue(bias - summ * speed / m);
             }
         }
 
@@ -103,12 +103,18 @@ namespace NetworkLearning.Library
         //Neuron(тип, функция) //Type: 0-input 1-hidden 2-output 3-bids
         public void initNet(Setting set)
         {
+            useBias = set.useBias;
             //Создание нейронов input
             {
                 List<Neurons> n = new List<Neurons>();
                 for (int j = 0; j < set.countNeurons[0]; j++)
                 {
                     n.Add(new Neurons(0, activFunc, 0, j));
+                }
+                //Добавление Bias
+                if (set.useBias == true)
+                {
+                    n.Add(new Neurons(3, activFunc, 0, 0.5));
                 }
                 neurons.Add(n);
             }
@@ -121,12 +127,9 @@ namespace NetworkLearning.Library
                     n.Add(new Neurons(1, activFunc, lay));
                 }
                 //Добавление Bias
-                for (int j = 0; j < set.bias.Length; j++)
+                if (set.useBias == true)
                 {
-                    if (lay == set.bias[j].index)
-                    {
-                        n.Add(new Neurons(3, activFunc, lay, set.bias[j].value));
-                    }
+                    n.Add(new Neurons(3, activFunc, lay, 0.5));
                 }
                 neurons.Add(n);
             }
@@ -140,13 +143,13 @@ namespace NetworkLearning.Library
                 neurons.Add(n);
             }
             //Создание и добавление синапсов между полносвязными слоями
-            for(int i=0;i<set.fullRelations.Length;i++)
+            for (int i = 0; i < set.fullRelations.Length; i++)
             {
                 //Проходимся по каждому нейрону левого слоя и добавляем к ним синапс 
                 //каждого правого нейрона
                 int neuronsLayer = set.fullRelations.ElementAt(i).ElementAt(0);
                 Random random = new Random();
-                for (int lef=0;lef<neurons.ElementAt(neuronsLayer).Count;lef++)
+                for (int lef = 0; lef < neurons.ElementAt(neuronsLayer).Count; lef++)
                 {
                     for (int r = 0; r < neurons.ElementAt(neuronsLayer + 1).Count; r++)
                     {
@@ -189,6 +192,12 @@ namespace NetworkLearning.Library
                     .ElementAt(set.relations.ElementAt(i).rightN[0]).addInputS(s);
                 synapses.Add(s);
             }
+            //Костыль: веса у Bias установить 1
+            if (useBias)
+                foreach (List<Neurons> lay in neurons)
+                {
+                    lay.Last().setWeights();
+                }
 
         }
     }

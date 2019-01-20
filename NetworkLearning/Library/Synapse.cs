@@ -23,6 +23,10 @@ namespace NetworkLearning.Library
             currDW = dw;
             w -= currDW;
         }
+        public void setWeight(double weight)
+        {
+            w = weight;
+        }
         Weights() { }
     }
     public class Synapse

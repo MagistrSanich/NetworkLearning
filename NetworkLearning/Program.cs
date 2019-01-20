@@ -12,7 +12,7 @@ namespace NetworkLearning
     {
         static void Main(string[] args)
         {
-            
+
             Setting set = createSetting();
             Console.WriteLine(setToSting(set));
             Networks network = new Networks(set);
@@ -40,13 +40,13 @@ namespace NetworkLearning
                 Console.WriteLine(JsonConvert.SerializeObject(output));
             }
             //Console.WriteLine("\n"+JsonConvert.SerializeObject(network.neurons));
-            const int iteration = 1;
-            const int m = 1;
-            for (int i = 0; i < iteration; i++)
+            const int epohs = 20000; // Эпохи
+            int m = tests.Count;//Итерации 
+            for (int e = 0; e < epohs; e++)
             {
-                //for (int j = 0; j < tests.Count; j++)
-                //network.learnNN(tests[j], testAnsw[j], m);
-                network.learnNN(tests[0], testAnsw[0], m);
+                for (int i = 0; i < m; i++)
+                    network.learnNN(tests[i], testAnsw[i], m);
+                //network.learnNN(tests[3], testAnsw[3], m);
             }
 
             Console.Write("\nOutput: ");
@@ -128,20 +128,9 @@ namespace NetworkLearning
                 ,
                 new Setting.Relations[] {
                     //Ниже указаны связи. Вх.парам: номер слоя,вес,левые нейроны,правые нейроны
-                    /*new Setting.Relations(0,random.NextDouble(),new int[] { 0},new int[]{0}),
-                    new Setting.Relations(0,random.NextDouble(),new int[] { 4},new int[]{1}),
-                    new Setting.Relations(0,random.NextDouble(),new int[] { 8},new int[]{0}),
-                    new Setting.Relations(0,random.NextDouble(),new int[] { 8},new int[]{1}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 0},new int[]{0}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 0},new int[]{1}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 1},new int[]{0}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 1},new int[]{1}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{0}),
-                    new Setting.Relations(1,random.NextDouble(),new int[] { 2},new int[]{1})*/
-                },//Ниже указаны слои на которых есть 1 нейрон смещения 
-                new Setting.Biases[] {
-                    new Setting.Biases(1,0.5)
-                });
+                },
+                true //Использовать смещения
+                );
             return set;
         }
         static string setToSting(Setting set)

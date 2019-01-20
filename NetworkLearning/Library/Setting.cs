@@ -25,25 +25,15 @@ namespace NetworkLearning.Library
                 rightN = NumberRightNeuron;
             }
         }
-        public class Biases
-        {
-            public int index;
-            public double value;
-            public Biases(int Index, double Value)
-            {
-                index = Index;
-                value = Value;
-            }
-        }
         public int[] countNeurons;
-        public Biases[] bias; // На каких слоях есть нейрон смещения
+        public bool useBias; // На каких слоях есть нейрон смещения
         public Relations[] relations;// Count Synapses != CountNeurons-1; 1 матрица = 1 синапс ()
         public int[][] fullRelations;
-        public Setting(int[] CountNeurons, int[][] FullRelations, Relations[] Relations, Biases[] Bias)
+        public Setting(int[] CountNeurons, int[][] FullRelations, Relations[] Relations, bool UseBias)
         {
             countNeurons = CountNeurons;
             relations = Relations;
-            bias = Bias;
+            useBias = UseBias;
             fullRelations = FullRelations;
         }
     }

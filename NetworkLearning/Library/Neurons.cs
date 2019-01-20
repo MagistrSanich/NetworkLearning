@@ -46,10 +46,18 @@ namespace NetworkLearning.Library
         }
         public void culcWeight(double speed,int m)
         {
-            foreach (Synapse synapse in inputSynapses)
+            foreach (Synapse synapse in outputSynapses)
             {
-                double dw = speed / m * (delta * synapse.leftNeuron.value);
+
+                double dw = speed / m * (synapse.leftNeuron.value * synapse.rightNeuron.delta);
                 synapse.weight.updateWeight(dw);
+            }
+        }
+        public void setWeights()
+        {
+            foreach(Synapse s in outputSynapses)
+            {
+                s.weight.setWeight( 1 );
             }
         }
         public void addInputS(Synapse synapse)
